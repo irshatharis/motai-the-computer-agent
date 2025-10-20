@@ -1,0 +1,33 @@
+{
+  "name": "try-robot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "demo": "node demo.js",
+    "demo:v2": "node demo-v2.js",
+    "test": "node test-screenshot.js",
+    "test:v2": "node test-v2.js",
+    "test:screenshot:v2": "node test-screenshot-v2.js"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@ai-sdk/anthropic": "^2.0.33",
+    "@ai-sdk/openai": "^2.0.52",
+    "@kirillvakalov/nut-tree__nut-js": "^4.2.1-2",
+    "@openrouter/ai-sdk-provider": "^1.2.0",
+    "ai": "^5.0.76",
+    "axios": "^1.12.2",
+    "dotenv": "^17.2.3",
+    "jimp": "^1.6.0",
+    "onnxruntime-node": "^1.23.0",
+    "robotjs": "^0.6.0",
+    "screenshot-desktop": "^1.15.2",
+    "sharp": "^0.34.4",
+    "tesseract.js": "^6.0.1",
+    "zod": "^4.1.12"
+  }
+}

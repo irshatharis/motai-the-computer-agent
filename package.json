@@ -1,5 +1,5 @@
 {
-  "name": "motai-the-agent",
+  "name": "motai-the-computer-agent",
   "version": "1.0.0",
   "scripts": {
     "start": "node src/index.ts"

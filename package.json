@@ -1,19 +1,16 @@
 {
-  "name": "try-robot",
+  "name": "motai-the-agent",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "demo": "node demo.js",
-    "demo:v2": "node demo-v2.js",
-    "test": "node test-screenshot.js",
-    "test:v2": "node test-v2.js",
-    "test:screenshot:v2": "node test-screenshot-v2.js"
+    "start": "node src/index.ts"
   },
   "type": "module",
   "author": "",
   "license": "ISC",
   "description": "",
+  "engines": {
+    "node": ">=24"
+  },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.33",
     "@ai-sdk/openai": "^2.0.52",

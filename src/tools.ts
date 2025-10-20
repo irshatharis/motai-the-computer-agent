@@ -3,6 +3,8 @@ import {z} from "zod";
 import type {Action} from "./action";
 import {Key} from "@kirillvakalov/nut-tree__nut-js";
 import {setTimeout as delay} from "node:timers/promises";
+import {readFile, readFileSync} from "node:fs";
+import sharp from "sharp";
 const defineTool: any = tool;
 
 function mapCharKey(char: string): Key | null {
@@ -83,14 +85,27 @@ export function createTools(action: Action) {
         "Capture the current screen to a file and return its path and size.",
       parameters: z.object({}),
       execute: async () => {
+        console.log("Calling getScreenContent...");
         try {
           const [imgPath, size] = await Promise.all([
             action.captureScreen(),
             action.getScreenSize(),
           ]);
+
+          // Optimize image: resize to max 1280px width and compress
+          const optimizedBuffer = await sharp(imgPath)
+            .resize(1280, null, {
+              fit: "inside",
+              withoutEnlargement: true,
+            })
+            .jpeg({quality: 75})
+            .toBuffer();
+
+          const base64 = optimizedBuffer.toString("base64");
+
           return {
             success: true,
-            screenshotPath: imgPath,
+            image: {base64, mimeType: "image/jpeg"},
             screen: size,
           };
         } catch (error: any) {
@@ -107,6 +122,7 @@ export function createTools(action: Action) {
         retries: z.number().optional().default(2),
       }),
       execute: async ({text}: {text: string}) => {
+        console.log("Calling clickOn...");
         return {
           success: false,
           error: `clickOn(\"${text}\") is not implemented in v3 yet (OCR not wired).`,
@@ -123,6 +139,7 @@ export function createTools(action: Action) {
       }),
       execute: async ({x, y}: {x: number; y: number}) => {
         try {
+          console.log("Calling clickAt...");
           await action.setPointerPosition(x, y);
           await delay(50);
           await action.leftClick();
@@ -140,6 +157,7 @@ export function createTools(action: Action) {
         text: z.string().describe("Text to type"),
       }),
       execute: async ({text}: {text: string}) => {
+        console.log("Calling typeText...");
         await action.typeString(text);
         const waitMs = Math.min(200 + text.length * 5, 1000);
         await delay(waitMs);
@@ -168,6 +186,7 @@ export function createTools(action: Action) {
         modifiers?: string[];
       }) => {
         try {
+          console.log("Calling pressKey...");
           const modifierKeys = modifiers
             .map(mapModifier)
             .filter((m): m is Key => m !== null);
@@ -214,6 +233,7 @@ export function createTools(action: Action) {
         amount?: number;
       }) => {
         try {
+          console.log("Calling scroll...");
           const delta = Math.max(1, Math.min(10, Math.floor(amount))) * 200;
           if (direction === "up") {
             await action.scrollUp(delta);
@@ -235,6 +255,7 @@ export function createTools(action: Action) {
       }),
       execute: async ({seconds}: {seconds: number}) => {
         try {
+          console.log("Calling wait...");
           await delay(seconds * 1000);
           return {success: true, waited: seconds};
         } catch (error: any) {
@@ -251,6 +272,7 @@ export function createTools(action: Action) {
         retries: z.number().optional().default(2),
       }),
       execute: async ({text}: {text: string}) => {
+        console.log("Calling doubleClick...");
         return {
           success: false,
           error: `doubleClick(\"${text}\") is not implemented in v3 yet (OCR not wired).`,
@@ -265,6 +287,7 @@ export function createTools(action: Action) {
         summary: z.string().describe("Summary of what was accomplished"),
       }),
       execute: async ({summary}: {summary: string}) => {
+        console.log("Calling taskComplete...");
         return {success: true, completed: true, summary};
       },
     }),
